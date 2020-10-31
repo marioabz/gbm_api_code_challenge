@@ -15,6 +15,16 @@ class User:
             'name': 'Partition Key',
             'type': 'hash',
             'hashed': False,
+            'structure': 'user#{id}'
+        }
+    )
+
+    sk: str = field(
+        init=False,
+        metadata={
+            'name': 'Sort Key',
+            'type': 'hash',
+            'hashed': False,
             'structure': '{id}'
         }
     )
@@ -23,4 +33,5 @@ class User:
         """Creates Partition and Sort keys checks data integrity against entity constraints."""
 
         # Composite Primary key creation
-        setattr(self, 'pk', f"user#{self.id}")
+        setattr(self, 'pk', f"user")
+        setattr(self, 'sk', f"{self.id}")
