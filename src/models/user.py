@@ -5,6 +5,6 @@ from dataclasses import dataclass
 @dataclass
 class User:
 
-    id: str
+    id: int
     issuers: list
     cash: Decimal
