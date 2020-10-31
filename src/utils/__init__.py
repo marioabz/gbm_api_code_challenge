@@ -1,2 +1,2 @@
 
-from .db_handler import connect_dynamodb
+from .db_handler import connect_dynamodb, dynamodb_client

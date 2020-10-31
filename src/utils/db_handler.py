@@ -16,3 +16,19 @@ def connect_dynamodb(table_name: str):
     except Exception:
 
         raise
+
+
+def dynamodb_client():
+
+    try:
+
+        return boto3.client(
+            'dynamodb',
+            region_name=os.environ.get('REGION'),
+            aws_access_key_id=os.environ.get('KEY'),
+            aws_secret_access_key=os.environ.get('SECRET_KEY')
+        )
+
+    except Exception:
+
+        raise
