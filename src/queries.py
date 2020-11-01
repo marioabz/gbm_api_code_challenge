@@ -1,7 +1,7 @@
 import os
-from utils import connect_dynamodb, dynamodb_client
+from .utils import connect_dynamodb
 from boto3.dynamodb.conditions import Key
-from serializers import serialize
+from .errors import check_client_error
 
 table = os.environ.get("TABLE")
 
@@ -13,17 +13,26 @@ class Queries(object):
         self.db = connect_dynamodb(table)
 
     def get_last_user(self):
-        return self.db.query(
+
+        result = self.db.query(
             KeyConditionExpression=
-            Key("pk").eq("users")
+            Key("pk").eq("user")
             &
             Key("sk").gt("0"),
-            ProjectionExpression="sk",
+            ProjectionExpression="id",
             ScanIndexForward=False,
             Limit=1
         )
 
-    def register_user(self, user):
-        return self.db.put_item(
-            Item=user.__dict__
+        check_client_error(
+            result,
+            "Query to get last user was not successful"
         )
+        return result["Items"][0]["id"]
+
+
+def put_element(item):
+    return {
+        "Item": item.__dict__,
+        "TableName": table
+    }
