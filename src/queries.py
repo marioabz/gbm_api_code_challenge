@@ -30,6 +30,32 @@ class Queries(object):
         )
         return result["Items"][0]["id"]
 
+    def insert_item(self, _item):
+
+        result = self.db.put_item(
+            Item=_item.__dict__
+        )
+        check_client_error(
+            result,
+            "Insert of item was not successful"
+        )
+
+    def get_last_transaction(self, _id, timestamp):
+        result = self.db.query(
+            KeyConditionExpression=
+            Key("pk").eq(f"transaction#{_id}")
+            &
+            Key("sk").lt(f"issuer#{timestamp}"),
+            ProjectionExpression="sk, time, shares, price, issuer_name",
+            ScanIndexForward=False,
+            Limit=1
+        )
+        check_client_error(
+            result,
+            "Query to get last transaction was not successful"
+        )
+        return result["Items"][0]
+
 
 def put_element(item):
     return {
