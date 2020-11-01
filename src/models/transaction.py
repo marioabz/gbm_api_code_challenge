@@ -21,7 +21,7 @@ class Transaction:
             'name': 'Partition Key',
             'type': 'hash',
             'hashed': False,
-            'structure': 'transaction#{id}#{operation}'
+            'structure': 'transaction#{id}'
         }
     )
 
