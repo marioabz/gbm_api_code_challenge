@@ -26,3 +26,12 @@ def serialize(data):
             return {key: serialize(data[key]) for key in data}
     else:
         return data
+
+
+def parse_user(obj):
+    obj["id"] = str(obj["id"])
+    obj["cash"] = str(obj["cash"])
+    obj["issuers"] = []
+    obj.pop("pk")
+    obj.pop("sk")
+    return obj
