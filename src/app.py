@@ -18,3 +18,24 @@ def index():
     return flask.jsonify(
         ["Welcome to GBM API code challenge"]
     )
+
+
+@app.route("/accounts", methods=["GET", "POST"])
+def register_user():
+
+    try:
+        _cash = request.form["cash"]
+        last_id = connector.get_last_user()
+        new_user = User(
+            cash=_cash,
+            id=last_id + 1
+        )
+        connector.insert_item(new_user)
+        return flask.jsonify(
+            get_response_body(
+                code=200,
+                data=parse_user(new_user.__dict__),
+                message=""
+            ))
+    except ClientError:
+        return
