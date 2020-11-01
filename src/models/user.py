@@ -6,7 +6,6 @@ from dataclasses import dataclass, field
 class User:
 
     id: int
-    issuers: list
     cash: Decimal
 
     pk: str = field(
