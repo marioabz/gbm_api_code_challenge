@@ -102,6 +102,28 @@ class Queries(object):
         return items
 
 
+class RedisDB(object):
+
+    def __init__(self):
+
+        self.inst = redis.Redis(
+            host=os.environ.get("REDIS_HOST"),
+            port=os.environ.get("REDIS_PORT"),
+            db=0)
+
+    def store_latest_transactions(self, _id, _operation,
+                                  _issuer, _amount, ex_time):
+        value = self.inst.get(f"{_id}#{_issuer}#{_operation}#{_amount}")
+        if value:
+            raise SameTransactionException(
+                "Same transaction was done in a span of 5 minutes before"
+            )
+
+        result = self.inst.set(
+            f"{_id}#{_issuer}#{_operation}#{_amount}", 1, ex=ex_time)
+        return result
+
+
 def put_element(item):
     return {
         "Item": item.__dict__,
