@@ -5,6 +5,14 @@ from dataclasses import dataclass, field
 @dataclass
 class User:
 
+    """
+    User model is the representation of a user. It is simplified
+    for the sake of the example. A single 'id' as an int and a cash
+    value to represent the starting balance of the user.
+    'Pk', meaning 'primary key', and 'sk' meaning 'sort key' are
+    the queryable properties of the model
+    """
+
     id: str
     cash: Decimal
 

@@ -10,6 +10,13 @@ table = os.environ.get("TABLE")
 
 class Queries(object):
 
+    """
+    Queries class allows to instantiate a connection with DynamoDB
+    and query the database with the functions declared in this class.
+    This queries are custom made in order to fit the necessities of
+    this project.
+    """
+
     def __init__(self):
 
         self.db = connect_dynamodb(table)
@@ -40,6 +47,8 @@ class Queries(object):
             "Insert of item was not successful"
         )
 
+    # Get last transaction of user without caring about the issuer
+    # unless issuer is specified
     def get_last_transaction(self, _id, timestamp, _issuer=""):
 
         if not _issuer:
@@ -64,6 +73,7 @@ class Queries(object):
         )
         return result["Items"][0]
 
+    # Get all transactions from user not matter the issuer.
     def get_all_transactions_from_user(self, _id, timestamp):
 
         items = list()
@@ -104,6 +114,12 @@ class Queries(object):
 
 class RedisDB(object):
 
+    """
+    RedisDB class allows to instantiate a connection with a RedisDB node.
+    To call this cache database one should use the method declared in this
+    class
+    """
+
     def __init__(self):
 
         self.inst = redis.Redis(
@@ -111,6 +127,8 @@ class RedisDB(object):
             port=os.environ.get("REDIS_PORT"),
             db=0)
 
+    # Store transaction to cache so that it is easier to see if transaction
+    # was  already played against this API.
     def store_latest_transactions(self, _id, _operation,
                                   _issuer, _amount, ex_time):
         value = self.inst.get(f"{_id}#{_issuer}#{_operation}#{_amount}")
@@ -124,6 +142,7 @@ class RedisDB(object):
         return result
 
 
+# Get a modifiable dict without generating copies nor references
 def put_element(item):
     return {
         "Item": item.__dict__,

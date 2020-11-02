@@ -4,6 +4,15 @@ from dataclasses import dataclass, field
 
 @dataclass
 class Transaction:
+    """
+    The transaction class allows the developer to encapsulate
+    the needed data to store a transaction enforcing the data
+    types and adding the cash balance along with the shares balance
+    to every transaction so that cash balance is trackable from
+    transaction number zero.
+    'Pk', meaning 'primary key', and 'sk' meaning 'sort key' are
+    the queryable properties of the model
+    """
 
     id: int
     time: str
