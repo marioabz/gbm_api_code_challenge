@@ -7,12 +7,14 @@ class Transaction:
 
     id: int
     time: str
-    shares: int
     operation: str
-    price: Decimal
-    change: Decimal
     issuer_name: str
+    share_price: Decimal
+    user_shares: Decimal
+    change_cash: Decimal
+    total_shares: Decimal
     user_balance: Decimal
+    change_shares: Decimal
 
     # Composite Primary Key
     pk: str = field(
@@ -40,5 +42,5 @@ class Transaction:
         """Creates Partition and Sort keys checks data integrity against entity constraints."""
 
         # Composite Primary key creation
-        setattr(self, 'pk', f"transaction#{self.id}#{self.operation}")
+        setattr(self, 'pk', f"transaction#{self.id}")
         setattr(self, 'sk', f"issuer#{self.time}#{self.issuer_name}")
