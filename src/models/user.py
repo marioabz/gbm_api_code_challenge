@@ -5,7 +5,7 @@ from dataclasses import dataclass, field
 @dataclass
 class User:
 
-    id: int
+    id: str
     cash: Decimal
 
     pk: str = field(
@@ -33,4 +33,4 @@ class User:
 
         # Composite Primary key creation
         setattr(self, 'pk', f"user")
-        setattr(self, 'sk', f"{self.id}")
+        setattr(self, 'sk', f"{self.id}".zfill(10))
