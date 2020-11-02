@@ -1,7 +1,9 @@
 import os
+import redis
 from .utils import connect_dynamodb
-from boto3.dynamodb.conditions import Key
+from boto3.dynamodb.conditions import Key, Attr
 from .errors import check_client_error
+from .custom_exceptions import SameTransactionException
 
 table = os.environ.get("TABLE")
 
@@ -13,22 +15,20 @@ class Queries(object):
         self.db = connect_dynamodb(table)
 
     def get_last_user(self):
-
-        result = self.db.query(
-            KeyConditionExpression=
-            Key("pk").eq("user")
-            &
-            Key("sk").gt("0"),
-            ProjectionExpression="id",
-            ScanIndexForward=False,
-            Limit=1
-        )
-
-        check_client_error(
-            result,
-            "Query to get last user was not successful"
-        )
-        return result["Items"][0]["id"]
+        try:
+            result = self.db.query(
+                KeyConditionExpression=
+                Key("pk").eq("user"),
+                ProjectionExpression="id",
+                ScanIndexForward=False,
+            )
+            check_client_error(
+                result,
+                "Query to get last user was not successful"
+            )
+            return result["Items"][0]["id"]
+        except IndexError:
+            return 0
 
     def insert_item(self, _item):
 
@@ -40,14 +40,22 @@ class Queries(object):
             "Insert of item was not successful"
         )
 
-    def get_last_transaction(self, _id, timestamp):
+    def get_last_transaction(self, _id, timestamp, _issuer=""):
+
+        if not _issuer:
+            sk = Key("sk").lt(f"issuer#{timestamp}")
+            project_expression = "#t, operation, user_balance"
+        else:
+            sk = Key("sk").lt(f"issuer#{timestamp}#{_issuer}")
+            project_expression = "#t, total_shares, user_shares, user_balance"
+
         result = self.db.query(
             KeyConditionExpression=
             Key("pk").eq(f"transaction#{_id}")
-            &
-            Key("sk").lt(f"issuer#{timestamp}"),
-            ProjectionExpression="sk, time, shares, price, issuer_name",
+            & sk,
+            ProjectionExpression=project_expression,
             ScanIndexForward=False,
+            ExpressionAttributeNames={"#t": "time"},
             Limit=1
         )
         check_client_error(
@@ -55,6 +63,43 @@ class Queries(object):
             "Query to get last transaction was not successful"
         )
         return result["Items"][0]
+
+    def get_all_transactions_from_user(self, _id, timestamp):
+
+        items = list()
+        result = self.db.query(
+            KeyConditionExpression=
+            Key("pk").eq(f"transaction#{_id}")
+            & Key("sk").lt(f"issuer#{timestamp}"),
+            ProjectionExpression="issuer_name, total_shares, share_price",
+            ScanIndexForward=False
+        )
+        items += result["Items"]
+
+        while 'LastEvaluatedKey' in result:
+            result = self.db.query(
+                KeyConditionExpression=
+                Key("pk").eq(f"transaction#{_id}")
+                & Key("sk").lt(f"issuer#{timestamp}"),
+                ProjectionExpression="issuer_name, total_shares, share_price",
+                ExclusiveStartKey=result["LastEvaluatedKey"],
+                ScanIndexForward=False
+            )
+
+            if "Items" in result:
+                items += result["Items"]
+            else:
+                raise KeyError("There was an error fetching open orders.")
+
+        to_delete = None
+        for item in items:
+            item["total_shares"] = str(item["total_shares"])
+            item["share_price"] = str(item["share_price"])
+            if not item["issuer_name"]:
+                to_delete = item
+        items.remove(to_delete)
+
+        return items
 
 
 def put_element(item):
