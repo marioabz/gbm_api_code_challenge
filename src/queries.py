@@ -4,6 +4,9 @@ from .utils import connect_dynamodb
 from boto3.dynamodb.conditions import Key, Attr
 from .errors import check_client_error
 from .custom_exceptions import SameTransactionException
+from dotenv import load_dotenv
+
+load_dotenv()
 
 table = os.environ.get("TABLE")
 
