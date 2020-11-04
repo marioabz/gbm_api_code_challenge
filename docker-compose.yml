@@ -4,5 +4,7 @@ services:
 
   web:
     image: "mariobd7/gbm_code_challenge"
+    environment:
+      - TZ=America/Mexico_City
     ports:
       - "80:80"
