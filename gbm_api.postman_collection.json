@@ -1,0 +1,100 @@
+{
+	"variables": [],
+	"info": {
+		"name": "GBM Code Challenge",
+		"_postman_id": "2c5ba439-f7a1-94b9-e08e-055742be9473",
+		"description": "Set of request to test GBM code challenge API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create Account",
+			"request": {
+				"url": "http://gbmapichallenge-env.eba-unczwcp4.us-east-1.elasticbeanstalk.com/accounts",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "cash",
+							"value": "500",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"description": "To create a account a 'cash' property needs to be  provided in order to set the initial balance"
+			},
+			"response": []
+		},
+		{
+			"name": "Hello world",
+			"request": {
+				"url": "http://gbmapichallenge-env.eba-unczwcp4.us-east-1.elasticbeanstalk.com",
+				"method": "POST",
+				"header": [],
+				"body": {},
+				"description": "Testing serving API"
+			},
+			"response": []
+		},
+		{
+			"name": "Make transaction",
+			"request": {
+				"url": "http://gbmapichallenge-env.eba-unczwcp4.us-east-1.elasticbeanstalk.com/accounts/11/orders",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "timestamp",
+							"value": "1604471298",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "operation",
+							"value": "buy",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "issuer_name",
+							"value": "AAPL",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "total_shares",
+							"value": "2",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "share_price",
+							"value": "50",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"description": "Create a transaction buying or selling a stock"
+			},
+			"response": []
+		}
+	]
+}
