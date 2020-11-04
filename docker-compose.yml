@@ -1,0 +1,8 @@
+
+version: "3.8"
+services:
+
+  web:
+    image: "mariobd7/gbm_code_challenge"
+    ports:
+      - "80:80"

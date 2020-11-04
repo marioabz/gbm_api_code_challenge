@@ -5,7 +5,15 @@ from dataclasses import dataclass, field
 @dataclass
 class User:
 
-    id: int
+    """
+    User model is the representation of a user. It is simplified
+    for the sake of the example. A single 'id' as an int and a cash
+    value to represent the starting balance of the user.
+    'Pk', meaning 'primary key', and 'sk' meaning 'sort key' are
+    the queryable properties of the model
+    """
+
+    id: str
     cash: Decimal
 
     pk: str = field(
@@ -33,4 +41,4 @@ class User:
 
         # Composite Primary key creation
         setattr(self, 'pk', f"user")
-        setattr(self, 'sk', f"{self.id}")
+        setattr(self, 'sk', f"{self.id}".zfill(10))
