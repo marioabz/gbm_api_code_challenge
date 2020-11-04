@@ -1,0 +1,84 @@
+---
+swagger: 2.0
+info:
+  description: This API Documentation provides a concise guide on how to test and use this API.
+  version: gbm.api.challenge
+  title: GBM API Challenge
+host: virtserver.swaggerhub.com
+basePath: /marioabz/Gbm.Code.Challenge/1
+schemes:
+- http
+paths:
+  /hello:
+    get:
+      summary: Returns a simple message to probe the system is working
+      produces:
+      - application/json
+      parameters: []
+      responses:
+        "200":
+          description: OK
+  /accounts:
+    post:
+      summary: Creates a user and returns an an object
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: request
+        required: false
+        schema:
+          type: object
+          required:
+          - cash
+          properties:
+            cash:
+              type: string
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Something went wrong from our side
+  /accounts/{user_id}/orders:
+    post:
+      summary: Creates a transaction for a user
+      produces:
+      - application/json
+      parameters:
+      - name: user_id
+        in: path
+        description: The user id
+        required: true
+        type: integer
+        minimum: 1
+      - in: body
+        name: request
+        required: false
+        schema:
+          type: object
+          required:
+          - issuer_name
+          - operation
+          - share_price
+          - timestamp
+          - total_shares
+          properties:
+            operation:
+              type: string
+            issuer_name:
+              type: string
+            total_shares:
+              type: integer
+            share_price:
+              type: string
+            timestamp:
+              type: integer
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Something went wrong with either request or server.
+        "425":
+          description: Duplicate transaction
+        "403":
+          description: Service unavalable or ilegal transaction
