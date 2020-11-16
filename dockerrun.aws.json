@@ -4,10 +4,7 @@
     "containerDefinitions": [
         {
             "environment": [
-                {
-                    "name": "DD_API_KEY",
-                    "value": "75f1741aa9e7c2edf9f73c430a79d668"
-                },
+
                 {
                     "name": "DD_LOGS_ENABLED",
                     "value": "true"
